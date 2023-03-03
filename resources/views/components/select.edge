@@ -1,0 +1,29 @@
+{{--  input-group input-group-outline my-3  --}}
+<div class="{{classes}}">
+  <!-- <label for={{name}}>{{label}}</label> -->
+  <select class="form-control
+
+  @if(flashMessages.has('errors.'+name))
+    border-danger
+  @endif
+
+  " name={{name}} id="">
+    <option selected="true" disabled="disabled">{{label}}</option>
+      @each((opt, index) in options)
+          <option
+          @if(selected == opt)
+              selected
+          @endif
+          value={{opt}}>
+            @if(texts)
+            {{texts[index]}}
+            @else
+            {{opt}}
+            @endif
+          </option>
+      @end
+
+  </select>
+
+</div>
+@!error({name})

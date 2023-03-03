@@ -1,0 +1,16 @@
+<div class="input-group input-group-outline my-3">
+
+  <input type="{{`${type?type:'text'}`}}" id={{name}} placeholder={{label}}
+  name={{name}} class="form-control
+   @if(flashMessages.has('errors.'+name))
+    border-danger
+   @endif
+   "
+  @if(value)
+    value="{{value[`${name}`]}}"
+  @endif
+
+  />
+</div>
+@!error({name})
+

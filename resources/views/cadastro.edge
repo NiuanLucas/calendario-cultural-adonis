@@ -1,0 +1,89 @@
+@layout('layout')
+@section('conteudo')
+  <!-- Page -->
+  <div class="page-header align-items-start min-vh-100" style="background-image: url('{{route('eventos.foto', {path: 'resources', name: 'rio-de-janeiro-theme_2.jpg'})}}');" loading="lazy">
+    <span class="mask bg-calendario opacity-3"></span>
+    <div class="container my-auto">
+      <div class="row">
+        <div class="col-lg-4 col-md-8 col-12 mx-auto">
+          <div class="card z-index-0 my-8 fadeIn3 fadeInBottom">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+              <div class="bg-calendario shadow-primary border-radius-lg py-3 pe-1">
+                <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">
+                  <i class="fa fa-sign-in" aria-hidden="true"></i>&nbsp;
+                  @if(auth.user)
+                  Editar
+                  @else
+                  Cadastro
+                  @endif
+                </h4>
+              </div>
+            </div>
+            <div class="card-body">
+              <form role="form" method="post" action="{{route('usuario.store')}}" class="text-start">
+
+              @if(auth.isLoggedIn)
+              <input type="hidden" name="id" value="{{auth.user.id}}"/>
+              <input type="hidden" name="password" value="{{auth.user.password}}"/>
+
+              @!input({name: 'email', type: 'email', label: 'E-mail', value: auth.user})
+
+
+              @!input({name: 'nome', label: 'Nome', value: auth.user})
+
+
+              @!input({name: 'sobrenome', label: 'Sobrenome', value: auth.user})
+
+              @!input({name: 'endereco', label: 'Endereço', value: auth.user})
+
+              @!input({name: 'dataNascimento', type: 'date', label: 'Data de Nascimento', value: auth.user})
+
+
+              @!select({name: "sexo", label: 'Sexo', options: ['masculino', 'feminino'], selected:auth.user.sexo, classes: 'input-group input-group-outline my-3'})
+
+                <div class="text-center">
+                  <button type="submit" class="btn btn-save bg-calendario w-100 my-4 mb-2">Salvar</button>
+                </div>
+
+              <br/>
+              <label class="justify-content-center mt-4 mb-4"> Quer entrar em outra conta? <br/> <a class="font-weight-bold text-purple" href="{{route('auth.logout')}}"> Sair </a> </label>
+
+            @else
+              @!input({name: 'email', type: 'email', label: 'E-mail'})
+
+
+              @!input({name: 'nome', label: 'Nome'})
+
+
+              @!input({name: 'sobrenome', label: 'Sobrenome'})
+
+              @!input({name: 'endereco', label: 'Endereço'})
+
+
+              @!input({name: 'password', type: 'password', label: 'Senha'})
+
+              @!input({name: 'dataNascimento', type: 'date', label: 'Data de Nascimento'})
+
+              @!select({name: "sexo", label: 'Sexo', options: ['masculino', 'feminino'], classes: 'input-group input-group-outline my-3'})
+
+               <div class="text-center">
+                  <button type="submit" class="btn btn-save bg-calendario w-100 my-4 mb-2">Cadastrar</button>
+                </div>
+
+              <br/>
+              <label class="justify-content-center mt-4 mb-4"> Você já tem uma conta? </br> <a class="font-weight-bold text-purple" href="{{route('auth.store')}}"> Fazer Login </a> </label>
+
+            @endif
+
+
+
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <!-- End Page -->
+@endsection

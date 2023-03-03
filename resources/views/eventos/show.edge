@@ -1,0 +1,163 @@
+@layout('../layout')
+
+@section('conteudo')
+
+  <!-- Page -->
+  <!-- -------- START HEADER 4 w/ search book a ticket form ------- -->
+  <header>
+    <div class="page-header min-height-400" style="background-image: url({{route('eventos.foto', {path: 'public', name: evento.foto})}});" loading="lazy">
+      <span class="mask bg-gradient-dark opacity-6"></span>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 mx-auto">
+            <div class="text-center">
+              <h1 class="text-white">{{evento.nome}}</h1>
+              <h3 class="text-white">{{evento.cidade.nome}} </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- -------- END HEADER 4 w/ search book a ticket form ------- -->
+  <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6 mb-4">
+    <!-- START Blogs w/ 4 cards w/ image & text & link -->
+    <section class="py-sm-4 py-4 position-relative"></section>
+      <div class="container mb-5">
+        <div class="row">
+
+          <div class="col-lg-6">
+            <a href="{{route('eventos.index')}}"> <i class="fas fa-arrow-left"></i></i>&nbsp;&nbsp;Voltar </a>
+
+            <h5 class="my-4">
+            <a href="{{route('eventos.delete',{id:evento.id})}}">
+            </a>
+              @if(auth.user)
+              <div x-data="{ like: {{evento.usuarios.find(u => u.id == auth.user.id) != null}}, routeFavorito: '{{route('eventos.favorito')}}', routeDesfavorito: '{{route('eventos.desfavorito')}}'}">
+                <a href="#" x-on:click="favoritar({{auth.user.id}}, {{evento.id}}, like?routeDesfavorito:routeFavorito, like?'Removido':'Adicionado aos favoritos');like = ! like">
+                  <i :class="like ? 'fas fa-heart' : 'far fa-heart'">
+                  </i>
+                  <span x-text="like?'Favorito':'Favoritar'"></span>
+                </a>
+              </div>
+              @endif
+            </h5>
+
+
+
+
+            <h1 class="mb-4 mt-n3">{{evento.nome}} </h1>
+            <small class="text-bold"> {{evento.endereco}}</small>
+            <p class="text-capitalize mb-4 mt-2">	{{evento.descricao}} </p>
+
+            <div class="row mb-6 mt-4">
+              <div class="col-sm-4">
+                <h6 class="text-capitalize mb-2"><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp; Frequencia: {{evento.frequencia}} </h6>
+                <h6 class="text-capitalize mb-2"><i class="fa fa-glass" aria-hidden="true"></i>&nbsp; Tipo: {{evento.tipo.nome}} </h6>
+                <h6 class="text-capitalize mb-2"><i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp; Cidade: {{evento.cidade.nome}} </h6>
+              </div>
+              <div class="col-sm-6 ">
+                <h6 class="mb-2"><i class="fa fa-car" aria-hidden="true"></i>&nbsp; Estacionamento: {{evento.estacionamento?'Sim':'Não'}}</h6>
+                <h6 class="mb-2"><i class="fa fa-medkit" aria-hidden="true"></i>&nbsp; Equipe Médica: {{evento.medico?'Sim':'Não'}}</h6>
+                <h6 class="mb-2"><i class="fa fa-shield" aria-hidden="true"></i>&nbsp; Segurança no local: {{evento.seguranca?'Sim':'Não'}}</h6>
+                <h6 class="mb-2"><i class="fa fa-wheelchair" aria-hidden="true"></i>&nbsp; Acessibilidade para deficientes: {{evento.deficiencia?'Sim':'Não'}}</h6>
+                <h6 class="mb-2"><i class="fa fa-bath" aria-hidden="true"></i>&nbsp; Banheiros públicos: {{evento.banheiro?'Sim':'Não'}}</h6>
+                <h6 class="mb-2"><i class="fa fa-money" aria-hidden="true"></i>&nbsp; Caixa 24h: {{evento.caixa?'Sim':'Não'}}</h6>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="col-lg-6">
+          @if(auth.user)
+            <div class="d-flex justify-content-end mb-3">
+              <a class="mx-2" href="{{route('eventos.edit', {id: evento.id})}}"> <i class="fa fa-pen" aria-hidden="true"></i>&nbsp;Editar</a>
+              <a class="mx-2" href="{{route('eventos.delete',{id:evento.id})}}"> <i class="fas fa-trash" aria-hidden="true"></i>&nbsp;Excluir</a>
+            </div>
+          @endif
+
+            <div class="mapouter mt-2"><div class="gmap_canvas">
+            <iframe width="100%" height="400px" id="gmap_canvas"
+            src="https://maps.google.com/maps?q={{evento.endereco+' '+evento.cidade.nome}}&t=&z=13&ie=UTF8&iwloc=&output=embed"
+            frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+            <style>.mapouter{position:relative;text-align:right;height:NaNpx;width:NaNpx;}</style><a href="https://www.embedgooglemap.net"></a>
+            <style>.gmap_canvas {overflow:hidden;background:none!important;height:NaNpx;width:NaNpx;}</style></div></div>
+          </div>
+
+        </div>
+      </div>
+      </section>
+
+    <!-- END Blogs w/ 4 cards w/ image & text & link -->
+    <div class="container">
+      <h2 class="mb-3">Comentários</h2>
+          {{--comentarios.reduce((acc, com) => acc+JSON.stringify(com)+',', '')--}}
+          <div class="form-floating" x-data="{ current: {comentario: '', created_at: 'Agora', usuario: {nome: '{{auth.user.nome}}'}, userId: {{auth.user.id}}, eventoId: {{evento.id}}}, comentarios: [{{comentarios.reduce((acc, com) => acc+JSON.stringify(com)+',', '')}}] }">
+            @if(auth.user)
+              <textarea class="form-control border px-2" id="comentario" x-model="current.comentario" style="height: 100px;" placeholder="Deixe um comentário..."> </textarea>
+              <label for="comentario">Deixe um comentário...</label>
+              <button class="btn btn-primary mt-3 mb-4 my-2" @click="current.id = await save(current); current.dataFormatada = 'Agora'; comentarios.push({...current}); current.comentario = ''">Enviar</button>
+            @endif
+
+          <template x-for="c in comentarios">
+            @include('components/comentario')
+          </template>
+
+
+          </div>
+
+
+        {{-- @each(comentario in comentarios)
+          @include('components/comentario')
+        @end --}}
+
+    </div>
+
+  </div>
+
+  <script>
+    async function save(com) {
+      console.log("salvando...", com)
+      const res = await axios.post('http://localhost:3333{{route('comentario.store')}}', com)
+      console.log("RESULTADO", res.data)
+      return res.data.$original.id
+    }
+
+    async function apagar(url, id) {
+      console.log('http://localhost:3333'+url, id)
+      axios('http://localhost:3333'+url)
+        .then(res => {
+          console.log(res)
+          if(res.status == '200') {
+            alert('Apagado com sucesso')
+          }
+      })
+
+    }
+
+    async function atualizar(obj, url) {
+
+
+      axios.post('http://localhost:3333'+url, obj)
+        .then(res => {
+          console.log(res)
+          if(res.status == '200') {
+            alert('Atualizado com sucesso')
+          }
+        })
+
+    }
+
+    function favoritar(userId, eventoId, url, msg) {
+      console.log('cheguei aqui')
+      axios.post('http://localhost:3333'+url, {userId, eventoId})
+        .then(res => {
+          console.log(res, msg)
+        })
+    }
+  </script>
+
+  <!-- End Page -->
+
+@endsection
+
